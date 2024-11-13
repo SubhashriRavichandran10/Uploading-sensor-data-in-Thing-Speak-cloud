@@ -1,3 +1,5 @@
+## NAME:R.SUBHASHRI
+## REGISTER NUMBER:212223230219
 # Uploading temperature sensor data in Thing Speak cloud
 
 # AIM:
@@ -72,9 +74,85 @@ Automatically act on your data and communicate using third-party services like T
 
 # PROGRAM:
 
+```
+
+#include "ThingSpeak.h"
+#include <WiFi.h>
+#include "DHT.h"
+//#include <OneWire.h>
+//#include <DallasTemperature.h>
+
+char ssid[] = "Oppzz!!!"; // Your WiFi SSID
+char pass[] = "trhduncg123";  // Your WiFi password
+
+const int out = 23; // Pin for temperature sensor data
+long T;
+float temperature = 0; // Initialize temperature
+WiFiClient client;
+DHT dht(23, DHT11);
+
+unsigned long myChannelField = 2709756; // Channel ID
+const int TemperatureField = 1;          // Field for temperature data
+const int HumidityField = 2;          // Field for humidity data
+
+const char* myWriteAPIKey = "2R5SPUTDC8VHZMVG"; // Your write API Key
+
+// Temperature sensor setup
+void setup() {
+  Serial.begin(115200);
+  pinMode(out, INPUT); // Set pin mode to input for temperature sensor
+  ThingSpeak.begin(client);
+  dht.begin();
+  delay(1000);
+ }
+
+void loop() 
+{
+  if (WiFi.status() != WL_CONNECTED) 
+  {
+Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+    while (WiFi.status() != WL_CONNECTED) 
+    {
+      WiFi.begin(ssid, pass);
+      Serial.print(".");
+      delay(5000);
+    }
+    Serial.println("\nConnected.");
+  }
+
+  // Read temperature
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+  
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  Serial.print("Humidity ");
+Serial.print(humidity);
+  Serial.println(" g.m-3");
+// Write temperature to ThingSpeak
+  ThingSpeak.writeField(myChannelField, TemperatureField, temperature, myWriteAPIKey); // Write temperature to ThingSpeak
+  ThingSpeak.writeField(myChannelField, HumidityField, humidity, myWriteAPIKey); // Write humidity to ThingSpeak
+ delay(100);
+}
+
+```
+
 # CIRCUIT DIAGRAM:
 
+![Screenshot 2024-11-13 172736](https://github.com/user-attachments/assets/92571ed3-bbc3-4289-af2c-8e8cd0e48410)
+
+
+![Screenshot 2024-11-13 172823](https://github.com/user-attachments/assets/4bdb1f49-a27a-4379-886c-80cd9a958a1a)
+
+
 # OUTPUT:
+
+![Screenshot 2024-11-13 172957](https://github.com/user-attachments/assets/8d008ab4-dfd5-42db-ad55-f4d65767cce2)
+
+
 
 # RESULT:
 
